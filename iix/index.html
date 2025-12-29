@@ -1,0 +1,1316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIX - Geo-Indexed Title Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #001a4d;
+            --accent-purple: #4b0082;
+            --light-blue-bg: #f0f7ff;
+            --text-gray: #4a4a4a;
+            --white: #ffffff;
+            --black: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-gray);
+            background-color: var(--white);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--white);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-style: italic;
+        }
+
+        /* Logo image replacement */
+        .logo-img {
+            height: 44px;
+            width: auto;
+            display: block;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-gray);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .btn-login {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 10px 25px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: none;
+            color: var(--white);
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url('hero bg.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            filter: contrast(1.06) saturate(1.25) brightness(1.03);
+            z-index: 0;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(22, 18, 36, 0.747); /* lighter overlay so bg is more visible */
+            z-index: 1;
+        }
+
+        .hero-content {
+            max-width: 600px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .btn-demo-white {
+            background-color: var(--white);
+            color: var(--primary-blue);
+            padding: 12px 30px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .hero-map-placeholder {
+            position: absolute;
+            right: 50px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 450px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 8px;
+            z-index: 3;
+        }
+
+        .hero-map-placeholder img { 
+            max-width: 100%;
+            height: auto;
+            display: block;
+            position: relative;
+            z-index: 3;
+        }
+
+        /* Section Headings */
+        .section-title {
+            font-size: 32px;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .section-title span {
+            color: var(--accent-purple);
+        }
+
+        .section-desc {
+            margin-bottom: 40px;
+            max-width: 800px;
+        }
+
+        /* What We Offer */
+        .offer-section {
+            padding: 80px 0;
+        }
+
+        .offer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .offer-list {
+            list-style: none;
+            position: relative;
+            padding-top: 28px;  /* larger padding for bigger icons */
+            padding-bottom: 28px; /* larger padding for bigger icons */
+            z-index: 0; /* base layer for the list */
+        }
+
+        /* Continuous vertical line through the icons */
+        .offer-list::before {
+            content: "";
+            position: absolute;
+            left: 24px; /* centered with larger icon */
+            top: 24px;
+            bottom: 24px;
+            width: 3px; /* thicker line */
+            background: #002a6a; /* slightly darker blue for stronger contrast */
+            border-radius: 2px;
+            z-index: 0; /* push the line behind */
+        }
+
+        .offer-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 28px;
+            align-items: flex-start;
+            position: relative;
+            z-index: 1; /* ensure content sits above the line */
+        }
+
+        .offer-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 16px;
+            font-weight: 700;
+            font-style: italic;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.12);
+            position: relative;
+            z-index: 2; /* icons above everything */
+        }
+
+        .offer-icon svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .offer-item p {
+            font-size: 18px; /* larger body text */
+            line-height: 1.6;
+            color: #23324a;
+        }
+
+        .image-placeholder {
+            background: transparent;
+            border: none;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Generic image rules for offers and footer (keeps image readable without cropping) */
+        .offer-image, .footer-image {
+            width: 100%;
+            height: auto;
+            max-width: 520px;
+            max-height: 520px;
+            display: block;
+            border-radius: 12px;
+            object-fit: contain;
+        }
+
+        /* Make the protect image fill its grid column height so it lines up with the list */
+        .protect-grid .image-placeholder {
+            align-items: stretch; /* ensure the placeholder spans full column height */
+        }
+
+        .protect-grid .protect-image {
+            width: auto;
+            height: 100%; /* match the list column height */
+            max-height: none;
+            display: block;
+            border-radius: 12px;
+            object-fit: cover; /* crop lightly if needed to fill the space */
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+
+        /* increase horizontal gap between the two columns so the image reads larger */
+        .offer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        /* Decorative drop-down line under section title */
+        .offer-section .section-title {
+            position: relative;
+            padding-bottom: 12px;
+        }
+
+        /* Strengths Grid */
+        .strengths-section {
+            padding: 80px 0;
+            background-color: var(--white);
+        }
+
+        .grid-6 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .card {
+            padding: 30px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-blue);
+            border-radius: 8px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .card h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: var(--primary-blue);
+        }
+
+        .card p {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        /* Middle CTA */
+        .middle-cta {
+            background: none;
+            background-color: var(--light-blue-bg);
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .middle-cta::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url('bg.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            filter: saturate(1.12) contrast(1.03) brightness(1.02);
+            z-index: 0;
+        }
+
+        .middle-cta::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.18);
+            z-index: 1;
+        }
+
+        .middle-cta > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .middle-cta h2 {
+            font-size: 28px;
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+        }
+
+        .middle-cta p {
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-demo-blue {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 12px 30px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Services Grid */
+        .services-section {
+            padding: 80px 0;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .service-card {
+            padding: 25px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .service-card h3 {
+            font-size: 15px;
+            margin: 15px 0 10px;
+            color: var(--primary-blue);
+        }
+
+        .service-card p {
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .service-card a {
+            font-size: 12px;
+            color: var(--primary-blue);
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        /* Tailored Solutions */
+        .solutions-section {
+            padding: 80px 0;
+        }
+
+        .solutions-section .section-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .solutions-section .section-desc {
+            margin-bottom: 28px;
+            color: #334155;
+            font-size: 16px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 22px;
+            margin-top: 28px;
+            align-items: stretch;
+        }
+
+        .step-card {
+            padding: 22px 24px;
+            border: 1px solid #e9edf2;
+            border-radius: 14px;
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            background: #fff;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+        }
+
+        .step-num {
+            width: 56px;
+            height: 56px;
+            min-width: 56px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-blue);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--primary-blue);
+            background: #fff;
+            font-size: 16px;
+        }
+
+        .step-card .step-text {
+            font-size: 15px;
+            color: #1f2937;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 1100px) {
+            .steps-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 680px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+            .solutions-section .section-title {
+                font-size: 28px;
+            }
+        }
+
+        /* Testimonials (styled to match provided design) */
+        .testimonials-section {
+            padding: 80px 0 110px;
+            background-color: #fafafa;
+        }
+
+        .testimonials-section .section-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 34px;
+            align-items: start;
+        }
+
+        .testimonial-card {
+            background: #fff;
+            padding: 34px 30px 62px; /* extra bottom space for overlap */
+            border-radius: 12px;
+            box-shadow: 0 18px 36px rgba(2,6,23,0.06);
+            position: relative;
+            min-height: 220px;
+        }
+
+        .testimonial-card .stars {
+            color: #f5c518;
+            display: block;
+            text-align: center;
+            margin-top: 12px;
+            letter-spacing: 3px;
+        }
+
+        .testimonial-text {
+            font-size: 14px;
+            color: #374151;
+            margin: 0 0 10px 0;
+            line-height: 1.6;
+        }
+
+        /* Client row sits visually overlapping below the card */
+        .client-info {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -34px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .client-img {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #ddd;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 12px rgba(2,6,23,0.08);
+            flex-shrink: 0;
+        }
+
+        .client-details h4 {
+            font-size: 14px;
+            margin: 0;
+            color: #0b2540;
+            font-weight: 700;
+        }
+
+        .client-details p {
+            font-size: 12px;
+            margin: 0;
+            color: #6b7280;
+        }
+
+        /* Carousel controls below cards */
+        .testimonial-controls {
+            display: flex;
+            gap: 18px;
+            justify-content: center;
+            margin-top: 72px;
+        }
+
+        .testimonial-controls button {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-blue);
+            background: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-blue);
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(2,6,23,0.06);
+        }
+
+        @media (max-width: 1100px) {
+            .testimonial-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 700px) {
+            .testimonial-grid { grid-template-columns: 1fr; }
+            .testimonial-card { padding-bottom: 80px; }
+            .client-info { position: static; transform: none; margin-top: 16px; justify-content: flex-start; }
+            .testimonial-controls { margin-top: 36px; }
+        }
+
+        /* Protecting Investment */
+        .protect-section {
+            padding: 80px 0;
+        }
+
+        .protect-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: stretch; /* make both columns match height */
+        }
+
+        .protect-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .protect-item {
+            padding: 18px 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            display: flex;
+            gap: 18px;
+            align-items: center;
+            background: #fff;
+        }
+
+        .protect-num {
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        /* Contact Form */
+        .contact-section {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 60px 0 10px; /* tightened top and bottom padding to pull divider closer */
+            text-align: center;
+        }
+
+        .contact-form-container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 12px;
+            border-radius: 4px;
+            border: none;
+            background: #333;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-submit {
+            background: var(--white);
+            color: var(--black);
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .contact-footer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-top: 8px; /* tightened spacing */
+            border-top: none; /* remove the thin line above tickmarks */
+            padding-top: 8px;
+            align-items: center;
+        }
+
+        .contact-footer-grid .contact-feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            color: #d0d6df;
+            padding: 10px 20px;
+        }
+
+        .contact-footer-grid .contact-feature + .contact-feature {
+            border-left: 2px solid rgba(255,255,255,0.12);
+        }
+
+        .check-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 0 10px rgba(0,0,0,0.4) inset;
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .contact-footer-grid .contact-feature p {
+            font-size: 13px;
+            opacity: 0.9;
+            text-align: center;
+            margin: 0;
+        }
+
+        /* Footer divider above map/title (hidden - using full-width white divider instead) */
+        .footer-divider {
+            display: none;
+        }
+
+        /* Full-width white divider between contact area and footer */
+        .full-divider {
+            width: 100vw;
+            height: 2px;
+            background: rgba(255,255,255,1);
+            margin: 0 0 8px 0;
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Align map and title side-by-side */
+        .footer-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .footer-left .footer-heading {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 20px 0 40px; /* reduce top padding to bring footer up */
+            background: #070707;
+            color: var(--white);
+            border-top: none;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 0.9fr 1fr 1fr; /* tighter, more balanced columns */
+            gap: 28px;
+            align-items: start;
+        }
+
+        .footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .footer-heading {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .footer-map {
+            width: 100%;
+            border-radius: 6px;
+            display: block;
+            max-height: 200px;
+            object-fit: cover;
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .footer-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-logo {
+            font-size: 36px;
+            font-weight: 800;
+            font-style: italic;
+            color: var(--white);
+        }
+
+        .brand-sub {
+            font-size: 12px;
+            opacity: 0.85;
+            text-align: center;
+        }
+
+        .newsletter {
+            width: 100%;
+            max-width: 380px;
+            margin-top: 6px;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .newsletter-form input[type="email"] {
+            flex: 1;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.03);
+            color: var(--white);
+            outline: none;
+        }
+
+        .newsletter-form button {
+            background: #5f3bd6;
+            color: #fff;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(95,59,214,0.18);
+        }
+
+        .social-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 700;
+            text-decoration: none;
+            box-shadow: 0 6px 18px rgba(2,6,23,0.12);
+        }
+
+        .footer-right {
+            display: flex;
+            gap: 28px;
+            justify-content: flex-end;
+        }
+
+        .footer-links {
+            min-width: 160px;
+        }
+
+        .footer-links h4 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            color: var(--white);
+        }
+
+        .footer-links a {
+            display: block;
+            color: #cbd5e7;
+            text-decoration: none;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .grid-6, .grid-4, .steps-grid, .testimonial-grid, .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .offer-grid, .protect-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-map-placeholder {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo"><img src="logo.png" alt="iix logo" class="logo-img"></div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Products</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Resources</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <a href="#" class="btn-login">Client Login</a>
+        </header>
+    </div>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Complete. Accurate. Effortless.<br>Geo-Indexed Title Search</h1>
+                <p>Unlock the power of accuracy, speed, and reliability with the premier title plant search platform by IIX.</p>
+                <a href="#" class="btn-demo-white">Request a Callback</a>
+            </div>
+            <div class="hero-map-placeholder">
+                <img src="1.png" alt="USA map illustration" />
+            </div>
+        </div>
+    </section>
+
+    <section class="offer-section">
+        <div class="container">
+            <h2 class="section-title">What <span>We</span> Offer</h2>
+            <p class="section-desc">IIX provides technology and services designed specifically for title companies, underwriters, attorneys, and abstractors. Our offerings include:</p>
+            
+            <div class="offer-grid">
+                <ul class="offer-list">
+                    <li class="offer-item">
+                        <div class="offer-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="8" r="5" fill="none" stroke="white" stroke-width="2"></circle>
+                                <path d="M9 14l-3 7 6-3 6 3-3-7" fill="none" stroke="white" stroke-width="2" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                        <p>Conversion of your Title Plant in 24 hours with 100% guarantee</p>
+                    </li>
+                    <li class="offer-item">
+                        <div class="offer-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <ellipse cx="12" cy="5" rx="7" ry="3" fill="none" stroke="white" stroke-width="2"></ellipse>
+                                <path d="M5 8c0 1.7 3.1 3 7 3s7-1.3 7-3" fill="none" stroke="white" stroke-width="2"></path>
+                                <path d="M5 12c0 1.7 3.1 3 7 3s7-1.3 7-3" fill="none" stroke="white" stroke-width="2"></path>
+                            </svg>
+                        </div>
+                        <p>Building a Title Plant from scratch using courthouse data in 1 week</p>
+                    </li>
+                    <li class="offer-item">
+                        <div class="offer-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <circle cx="12" cy="12" r="3" fill="none" stroke="white" stroke-width="2"></circle>
+                                <path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"></path>
+                            </svg>
+                        </div>
+                        <p>Powerful Title Plant Creation and Management Software.</p>
+                    </li>
+                    <li class="offer-item">
+                        <div class="offer-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 12h4l2-4 2 8 2-4h4" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                        <p>Title Plant Vital Signs Report to Keep your Database Accurate and Healthy.</p>
+                    </li>
+                    <li class="offer-item">
+                        <div class="offer-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 2l7 4v6c0 5-3.3 8-7 10-3.7-2-7-5-7-10V6l7-4z" fill="none" stroke="white" stroke-width="2"></path>
+                                <path d="M9 12l2 2 4-4" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                        <p>Integrated Compliance Services such as OFAC And PACER Overlay.</p>
+                    </li>
+                    <li class="offer-item">
+                        <div class="offer-icon">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M7 2h7l5 5v13H7z" fill="none" stroke="white" stroke-width="2"></path>
+                                <path d="M14 2v5h5" fill="none" stroke="white" stroke-width="2"></path>
+                                <path d="M9 12h8M9 16h8" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"></path>
+                            </svg>
+                        </div>
+                        <p>Professional Training and Structure Support to Maintain Legal Standards.</p>
+                    </li>
+                </ul>
+                <div class="image-placeholder">
+                    <img src="2.png" alt="Document with callouts" class="offer-image" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="strengths-section">
+        <div class="container">
+            <h2 class="section-title">Our Key <span>Strengths</span> and Advantages</h2>
+            <div class="grid-6">
+                <div class="card">
+                    <div class="card-icon">★</div>
+                    <h3>10+ years of proven title plant expertise</h3>
+                    <p>Our industry-leading plant expertise ensures reliability, accuracy, and scalability.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">⚙</div>
+                    <h3>Proprietary, purpose-built technology</h3>
+                    <p>Built from the ground up for title plants, our technology delivers superior performance.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">☁</div>
+                    <h3>Enterprise-scale, multi-tenant architecture</h3>
+                    <p>Scalable infrastructure designed to handle high volumes and multiple users.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">▤</div>
+                    <h3>Flexible deployment options</h3>
+                    <p>Choose between cloud-based or on-premise solutions tailored to your needs.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">↑</div>
+                    <h3>Industry-leading data accuracy model</h3>
+                    <p>Advanced algorithms and human verification ensure the highest data quality.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon">🛡</div>
+                    <h3>Secure, resilient infrastructure with continuous innovation</h3>
+                    <p>State-of-the-art security and regular updates keep your data safe and current.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="middle-cta">
+        <div class="container">
+            <h2>The Title Plant Search Platform That Provides a 360° Solution</h2>
+            <p>Empowering your business with Geo-Indexed Title Plants—driven by Speed, Accuracy, Efficiency, and Comprehensive Data Integrity.</p>
+            <a href="#" class="btn-demo-blue">Request a Demo</a>
+        </div>
+    </section>
+
+    <section class="services-section">
+        <div class="container">
+            <h2 class="section-title">Our Key <span>Services</span> and Products</h2>
+            <div class="grid-4">
+                <div class="service-card">
+                    <div class="card-icon">💻</div>
+                    <h3>Title Plant Software (TPS)</h3>
+                    <p>Comprehensive software for managing and searching title plants.</p>
+                    <a href="#">Find out More</a>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">☁</div>
+                    <h3>The IIX Cloud</h3>
+                    <p>Secure, high-availability cloud storage for your title data.</p>
+                    <a href="#">Find out More</a>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">🏗</div>
+                    <h3>Building Plants</h3>
+                    <p>Expert services for creating new title plants from scratch.</p>
+                    <a href="#">Find out More</a>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">📝</div>
+                    <h3>Keying & Posting</h3>
+                    <p>Accurate data entry and posting services for title plants.</p>
+                    <a href="#">Find out More</a>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">🏢</div>
+                    <h3>Title Companies</h3>
+                    <p>Tailored solutions for title insurance companies.</p>
+                    <a href="#">Find out More</a>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">🏛</div>
+                    <h3>County Clerks</h3>
+                    <p>Tools and services for county recording offices.</p>
+                    <a href="#">Find out More</a>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">⚡</div>
+                    <h3>Landmen Services</h3>
+                    <p>Specialized tools for oil, gas, and mineral rights research.</p>
+                    <a href="#">Find out More</a>
+                </div>
+                <div class="service-card">
+                    <div class="card-icon">📁</div>
+                    <h3>General Files</h3>
+                    <p>Management and search for miscellaneous property records.</p>
+                    <a href="#">Find out More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="solutions-section">
+        <div class="container">
+            <h2 class="section-title">Tailored Solutions for the <span>Title Plant Industry</span></h2>
+            <p>Enable exhaustive and comprehensive title searches, data retrieval, and lead to Claim Orders</p>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-num">01</div>
+                    <p>Locate and identify title plants in a specified geographic area</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">02</div>
+                    <p>View historical property records and documents for specific properties and ownership</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">03</div>
+                    <p>Retrieve and download property documents such as deeds, mortgages, liens, and more</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">04</div>
+                    <p>Verify and validate property ownership and encumbrances for title insurance and legal purposes</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">What clients say <span>about us</span></h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"IIX has transformed our title search process. The accuracy and speed are unmatched in the industry."</p>
+                    <div class="client-info">
+                        <div class="client-img"></div>
+                        <div class="client-details">
+                            <h4>John Doe</h4>
+                            <p>CEO, Title Experts Inc.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"The cloud platform is incredibly reliable. We've had zero downtime since switching to IIX."</p>
+                    <div class="client-info">
+                        <div class="client-img"></div>
+                        <div class="client-details">
+                            <h4>Jane Smith</h4>
+                            <p>Operations Manager, Secure Title</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="testimonial-text">"Their customer support is top-notch. They really understand the needs of title professionals."</p>
+                    <div class="client-info">
+                        <div class="client-img"></div>
+                        <div class="client-details">
+                            <h4>Robert Brown</h4>
+                            <p>Lead Abstractor, County Search</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="protect-section">
+        <div class="container">
+            <h2 class="section-title">Protecting Your Investment and <span>Helping You Grow</span></h2>
+            <div class="protect-grid">
+                <ul class="protect-list">
+                    <li class="protect-item">
+                        <span class="protect-num">01</span>
+                        <p>Build your plant to sovereign query</p>
+                    </li>
+                    <li class="protect-item">
+                        <span class="protect-num">02</span>
+                        <p>Expand operations by adding new counties</p>
+                    </li>
+                    <li class="protect-item">
+                        <span class="protect-num">03</span>
+                        <p>Migrate to new networks or integrate with other software</p>
+                    </li>
+                    <li class="protect-item">
+                        <span class="protect-num">04</span>
+                        <p>Benefit from ongoing expert advice and long-term partnership</p>
+                    </li>
+                </ul>
+                <div class="image-placeholder">
+                    <img src="3.png" alt="Aerial neighborhood" class="protect-image" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section">
+        <div class="container">
+            <h2>Interested to find out what IIX can do for you?</h2>
+            <p>Book a short, no-obligation discovery call</p>
+            
+            <div class="contact-form-container">
+                <form>
+                    <div class="form-grid">
+                        <input type="text" placeholder="Name">
+                        <input type="email" placeholder="Email">
+                        <input type="text" placeholder="Company Name">
+                        <input type="text" placeholder="Contact Phone">
+                    </div>
+                    <button type="submit" class="btn-submit">Request a call back</button>
+                </form>
+            </div>
+
+            <div class="contact-footer-grid">
+                <div class="contact-feature">
+                    <div class="check-icon">✓</div>
+                    <p>Discuss your needs and challenges</p>
+                </div>
+                <div class="contact-feature">
+                    <div class="check-icon">✓</div>
+                    <p>Explore the most impactful features of IIX</p>
+                </div>
+                <div class="contact-feature">
+                    <div class="check-icon">✓</div>
+                    <p>See how to unlock more value from your data</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="full-divider" aria-hidden="true"></div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-left">
+                    <img src="footer.png" alt="US network map" class="footer-map" style="max-width:300px;">
+                    <div>
+                        <div class="footer-heading">Your Title Plant Expert Platform</div>
+                    </div>
+                </div>
+
+                <div class="footer-center">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <div class="brand-logo">iix</div>
+                        <div class="brand-pipe">||</div>
+                        <div style="font-size:12px;color:rgba(255,255,255,0.9);font-weight:600;">iixExperts LLC</div>
+                    </div>
+                    <div class="brand-sub">Information Integration Experts, LLC</div>
+
+                    <div class="newsletter">
+                        <form class="newsletter-form" onsubmit="event.preventDefault();">
+                            <input type="email" placeholder="Enter a valid email address" required>
+                            <button type="submit">Submit</button>
+                        </form>
+                    </div>
+
+                    <div class="social-row">
+                        <a class="social-icon" href="#" aria-label="X">X</a>
+                        <a class="social-icon" href="#" aria-label="LinkedIn">in</a>
+                        <a class="social-icon" href="#" aria-label="YouTube">▶</a>
+                    </div>
+                </div>
+
+                <div class="footer-right">
+                    <div class="footer-links">
+                        <h4>Quick Links</h4>
+                        <a href="#">Home</a>
+                        <a href="#">Products</a>
+                        <a href="#">Services</a>
+                        <a href="#">Resources</a>
+                        <a href="#">Contact</a>
+                        <a href="#">Privacy Policy</a>
+                        <a href="#">Terms & Conditions</a>
+                        <a href="#">Licensing Information</a>
+                    </div>
+
+                    <div class="footer-links">
+                        <h4>Products & Services</h4>
+                        <a href="#">Title Plant Software</a>
+                        <a href="#">The IIX Cloud</a>
+                        <a href="#">Building Plants</a>
+                        <a href="#">Keying & posting</a>
+                        <a href="#">Title Companies</a>
+                        <a href="#">County Clerks</a>
+                        <a href="#">Landmen Services</a>
+                        <a href="#">General Files</a>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    </footer>
+
+</body>
+</html>

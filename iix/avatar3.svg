@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <defs>
+    <style>text{font-family:Arial,Helvetica,sans-serif;font-weight:700;fill:#ffffff}</style>
+  </defs>
+  <rect width="120" height="120" rx="60" ry="60" fill="#6b2f8f"/>
+  <text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" font-size="40">MW</text>
+</svg>
